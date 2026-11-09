@@ -16,15 +16,15 @@ The workflow processes one pending topic per scheduled run. The workflow starts 
 
 ## Requirements
 
-- Docker and Docker Compose
-- An n8n instance
+- Docker Desktop (Windows/macOS) or Docker Engine with the Docker Compose v2 plugin (Linux); `docker compose` must be available
+- Self-hosted n8n Community Edition, which the included Compose file starts for you (no separate n8n installation or n8n Cloud subscription is required)
 - An Ollama service with the `gemma3:latest` model (or another model of your choice) available
 - Google Sheets and Google Docs OAuth credentials
 - SerpApi credentials
 - The n8n community node used by the workflow: `n8n-nodes-serpapi`
 - The n8n LangChain nodes used by the workflow
 
-## Start n8n with Docker Compose
+## Start n8n Community Edition with Docker Compose
 
 From this directory, run:
 
