@@ -1,0 +1,422 @@
+{
+  "name": "d_Blogger",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                2,
+                6
+              ],
+              "triggerAtHour": 10
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        -192
+      ],
+      "id": "4dcb7f04-70ce-412f-b0e5-6adcb08d6ddf",
+      "name": "Schedule Trigger",
+      "retryOnFail": true,
+      "waitBetweenTries": 1000
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.output }}",
+        "options": {
+          "systemMessage": "# ROLE\nYou are a senior developer and technical editor. Your goal is to rewrite the provided blog draft to make it read naturally like an authentic, human-written engineering post.\n\n# TONE & STYLE RULES\n- Sentence Variety (Burstiness): Mix short, punchy sentences (3-7 words) with longer explanatory ones. Never use three sentences of similar length in a row.\n- Direct Perspective: Write from a pragmatic developer point of view using conversational terms (\"I\", \"we\", \"you\"). \n- Natural Transitions: Remove rigid connectors. Replace \"Furthermore\" or \"In conclusion\" with practical lead-ins like \"Here's the catch:\", \"Turns out,\", \"To handle this,\", or \"Why does this matter?\".\n- Pragmatic Context: Keep tone grounded and direct. Speak to practical trade-offs rather than hyping concepts.\n\n# BANNED WORDS & PHRASES (STRICT)\nDo NOT use any of the following terms:\n- \"delve\", \"unleash\", \"harness\", \"tapestry\", \"testament\", \"beacon\", \"realm\", \"paradigm\", \"game-changer\", \"cornerstone\", \"interplay\", \"spearhead\", \"vital role\"\n- \"furthermore\", \"moreover\", \"in summary\", \"it is important to note\", \"needless to say\", \"in today's fast-paced world\"\n\n# PRESERVATION RULES\n- Preserve all technical code snippets, terminal commands, framework names, and accuracy intact.\n- Keep clean Markdown formatting (H1 `#`, H2 `##`, lists, and bold text).\n- Match the original length—do not summarize or drop key technical explanations."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1024,
+        -192
+      ],
+      "id": "1684befe-438d-43e3-97c7-b15289c40f95",
+      "name": "humanizer agent"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Write a blog post on the following topic:\nTopic: {{ $('get topic').item.json.Topic }}\nTarget Keywords: {{ $('get topic').item.json['Target Keywords'] }}\n\nHere is up-to-date web research to use for your facts:\nContext: {{ $json.organic_results.map(r => r.snippet).join('\\n') }}",
+        "options": {
+          "systemMessage": "CRITICAL INSTRUCTION: You MUST use your search tool to look up the user's topic before writing anything. Gather recent facts, context, and key details from the internet, then use those search results to write your draft.\n\nYou are an expert blog writer. Write a comprehensive, engaging blog post on the user's topic. Write strictly in plain English. Do not use any Markdown formatting, bullet points, em dashes, or header symbols. If you make a list, use numbered lists only (1. 2. 3.)."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        672,
+        -192
+      ],
+      "id": "e6a44bbb-c599-4b5f-bc6d-84b429aded02",
+      "name": "drafting agent"
+    },
+    {
+      "parameters": {
+        "model": "gemma3:latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        752,
+        48
+      ],
+      "id": "e4d1db71-090e-4e2f-b627-4899838862b5",
+      "name": "ollama draft model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "FilBHizjFNnxRA49",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "gemma3:latest",
+        "options": {
+          "temperature": 0.7
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        1104,
+        48
+      ],
+      "id": "b301f33c-cca2-4990-8aa5-54717528386c",
+      "name": "ollama humanize model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "FilBHizjFNnxRA49",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "folderId": "1OONBPA58Oj2oVouNLEVvbL3lkbwuyhME",
+        "title": "=Blog - {{ $('get topic').item.json.Topic }}"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        1376,
+        -192
+      ],
+      "id": "4035ab91-9051-4550-89f3-55409e4f719e",
+      "name": "create doc",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "lN1NTxOqNOBX3uPd",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $json.id }}",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "={{ $('humanizer agent').item.json.output }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        1600,
+        -192
+      ],
+      "id": "01c960b5-d3ad-4469-b6c7-da6440eadb67",
+      "name": "update doc",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "lN1NTxOqNOBX3uPd",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1rSiaKAbN3uXFwhGWrLABQ9J97oYMvSIjvXvLttSUZ_Q",
+          "mode": "list",
+          "cachedResultName": "n8n-blogs",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1rSiaKAbN3uXFwhGWrLABQ9J97oYMvSIjvXvLttSUZ_Q/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1rSiaKAbN3uXFwhGWrLABQ9J97oYMvSIjvXvLttSUZ_Q/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Status": "Completed",
+            "row_number": "={{ $('get topic').item.json.row_number }}"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "Topic",
+              "displayName": "Topic",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Target Keywords",
+              "displayName": "Target Keywords",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1824,
+        -192
+      ],
+      "id": "b9309340-e70f-4473-b8c6-227db4bb8a7c",
+      "name": "update sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "9U52znCPI8HK977q",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1rSiaKAbN3uXFwhGWrLABQ9J97oYMvSIjvXvLttSUZ_Q",
+          "mode": "list",
+          "cachedResultName": "n8n-blogs",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1rSiaKAbN3uXFwhGWrLABQ9J97oYMvSIjvXvLttSUZ_Q/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1rSiaKAbN3uXFwhGWrLABQ9J97oYMvSIjvXvLttSUZ_Q/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Status",
+              "lookupValue": "Pending"
+            }
+          ]
+        },
+        "options": {
+          "returnFirstMatch": true
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        -192
+      ],
+      "id": "716511e4-6082-4346-87a4-55c5f0f5806e",
+      "name": "get topic",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "9U52znCPI8HK977q",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-serpapi.serpApi",
+      "typeVersion": 1,
+      "position": [
+        448,
+        -192
+      ],
+      "id": "aa767710-7f45-41dd-8819-bc0ad1f741cc",
+      "name": "Google search",
+      "credentials": {
+        "serpApi": {
+          "id": "2khss89mt2b6NyOH",
+          "name": "SerpApi account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "get topic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "drafting agent": {
+      "main": [
+        [
+          {
+            "node": "humanizer agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "humanizer agent": {
+      "main": [
+        [
+          {
+            "node": "create doc",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ollama draft model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "drafting agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ollama humanize model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "humanizer agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "create doc": {
+      "main": [
+        [
+          {
+            "node": "update doc",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update doc": {
+      "main": [
+        [
+          {
+            "node": "update sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get topic": {
+      "main": [
+        [
+          {
+            "node": "Google search",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google search": {
+      "main": [
+        [
+          {
+            "node": "drafting agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "22ec6668-e0f2-4ec4-9da8-a6bd84b7abaf",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8c937638b0fdc6b1ee9f8330cc9dda02b7d1da261c13da1366a76535d758badc"
+  },
+  "nodeGroups": [],
+  "id": "F3bjphbWEmiCcqzY",
+  "tags": []
+}
