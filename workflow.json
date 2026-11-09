@@ -73,13 +73,7 @@
         48
       ],
       "id": "e4d1db71-090e-4e2f-b627-4899838862b5",
-      "name": "ollama draft model",
-      "credentials": {
-        "ollamaApi": {
-          "id": "FilBHizjFNnxRA49",
-          "name": "Ollama account"
-        }
-      }
+      "name": "ollama draft model"
     },
     {
       "parameters": {
@@ -95,17 +89,11 @@
         48
       ],
       "id": "b301f33c-cca2-4990-8aa5-54717528386c",
-      "name": "ollama humanize model",
-      "credentials": {
-        "ollamaApi": {
-          "id": "FilBHizjFNnxRA49",
-          "name": "Ollama account"
-        }
-      }
+      "name": "ollama humanize model"
     },
     {
       "parameters": {
-        "folderId": "1OONBPA58Oj2oVouNLEVvbL3lkbwuyhME",
+        "folderId": "YOUR_GOOGLE_DRIVE_FOLDER_ID",
         "title": "=Blog - {{ $('get topic').item.json.Topic }}"
       },
       "type": "n8n-nodes-base.googleDocs",
@@ -115,13 +103,7 @@
         -192
       ],
       "id": "4035ab91-9051-4550-89f3-55409e4f719e",
-      "name": "create doc",
-      "credentials": {
-        "googleDocsOAuth2Api": {
-          "id": "lN1NTxOqNOBX3uPd",
-          "name": "Google Docs account"
-        }
-      }
+      "name": "create doc"
     },
     {
       "parameters": {
@@ -143,30 +125,22 @@
         -192
       ],
       "id": "01c960b5-d3ad-4469-b6c7-da6440eadb67",
-      "name": "update doc",
-      "credentials": {
-        "googleDocsOAuth2Api": {
-          "id": "lN1NTxOqNOBX3uPd",
-          "name": "Google Docs account"
-        }
-      }
+      "name": "update doc"
     },
     {
       "parameters": {
         "operation": "update",
         "documentId": {
           "__rl": true,
-          "value": "1rSiaKAbN3uXFwhGWrLABQ9J97oYMvSIjvXvLttSUZ_Q",
+          "value": "YOUR_GOOGLE_SHEETS_DOCUMENT_ID",
           "mode": "list",
-          "cachedResultName": "n8n-blogs",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1rSiaKAbN3uXFwhGWrLABQ9J97oYMvSIjvXvLttSUZ_Q/edit?usp=drivesdk"
+          "cachedResultName": "YOUR_SPREADSHEET_NAME"
         },
         "sheetName": {
           "__rl": true,
-          "value": "gid=0",
+          "value": "YOUR_SHEET_ID",
           "mode": "list",
-          "cachedResultName": "Sheet1",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1rSiaKAbN3uXFwhGWrLABQ9J97oYMvSIjvXvLttSUZ_Q/edit#gid=0"
+          "cachedResultName": "YOUR_SHEET_NAME"
         },
         "columns": {
           "mappingMode": "defineBelow",
@@ -232,29 +206,21 @@
         -192
       ],
       "id": "b9309340-e70f-4473-b8c6-227db4bb8a7c",
-      "name": "update sheet",
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "9U52znCPI8HK977q",
-          "name": "Google Sheets account"
-        }
-      }
+      "name": "update sheet"
     },
     {
       "parameters": {
         "documentId": {
           "__rl": true,
-          "value": "1rSiaKAbN3uXFwhGWrLABQ9J97oYMvSIjvXvLttSUZ_Q",
+          "value": "YOUR_GOOGLE_SHEETS_DOCUMENT_ID",
           "mode": "list",
-          "cachedResultName": "n8n-blogs",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1rSiaKAbN3uXFwhGWrLABQ9J97oYMvSIjvXvLttSUZ_Q/edit?usp=drivesdk"
+          "cachedResultName": "YOUR_SPREADSHEET_NAME"
         },
         "sheetName": {
           "__rl": true,
-          "value": "gid=0",
+          "value": "YOUR_SHEET_ID",
           "mode": "list",
-          "cachedResultName": "Sheet1",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1rSiaKAbN3uXFwhGWrLABQ9J97oYMvSIjvXvLttSUZ_Q/edit#gid=0"
+          "cachedResultName": "YOUR_SHEET_NAME"
         },
         "filtersUI": {
           "values": [
@@ -275,13 +241,7 @@
         -192
       ],
       "id": "716511e4-6082-4346-87a4-55c5f0f5806e",
-      "name": "get topic",
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "9U52znCPI8HK977q",
-          "name": "Google Sheets account"
-        }
-      }
+      "name": "get topic"
     },
     {
       "parameters": {
@@ -295,13 +255,7 @@
         -192
       ],
       "id": "aa767710-7f45-41dd-8819-bc0ad1f741cc",
-      "name": "Google search",
-      "credentials": {
-        "serpApi": {
-          "id": "2khss89mt2b6NyOH",
-          "name": "SerpApi account"
-        }
-      }
+      "name": "Google search"
     }
   ],
   "pinData": {},
@@ -411,12 +365,6 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "22ec6668-e0f2-4ec4-9da8-a6bd84b7abaf",
-  "meta": {
-    "templateCredsSetupCompleted": true,
-    "instanceId": "8c937638b0fdc6b1ee9f8330cc9dda02b7d1da261c13da1366a76535d758badc"
-  },
   "nodeGroups": [],
-  "id": "F3bjphbWEmiCcqzY",
   "tags": []
 }
